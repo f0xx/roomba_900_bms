@@ -274,6 +274,16 @@ esp_err_t smbus_write_block(uint8_t addr, uint8_t cmd, const uint8_t *data, size
     return write_body(addr, body, 2 + len);
 }
 
+esp_err_t smbus_write_raw_pec(uint8_t addr, uint8_t cmd, const uint8_t *data, size_t len) {
+    if (data == NULL || len > 32) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    uint8_t body[34];
+    body[0] = cmd;
+    memcpy(body + 1, data, len);
+    return write_body(addr, body, 1 + len);
+}
+
 static esp_err_t read_word_pec(uint8_t addr, uint8_t cmd, uint16_t *value) {
     uint8_t raw[3] = {0};
     esp_err_t err = transceive(addr, &cmd, 1, raw, sizeof(raw));

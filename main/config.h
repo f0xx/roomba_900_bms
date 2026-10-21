@@ -1,5 +1,10 @@
 #pragma once
 
+// Enable comprehensive one-shot Renesas RAJ240045 (045A20) diagnostics by default.
+#ifndef BMS_DEBUG_DIAG
+#define BMS_DEBUG_DIAG 1
+#endif
+
 // ESP32-WROOM-32 pins wired straight to the TCA9548A upstream bus.
 // GPIO21 and GPIO22 are not strapping pins.
 #define PIN_I2C_SDA 21
