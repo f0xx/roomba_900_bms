@@ -17,6 +17,9 @@ esp_err_t smbus_write_word(uint8_t addr, uint8_t cmd, uint16_t value);
 esp_err_t smbus_read_block(uint8_t addr, uint8_t cmd, uint8_t *data, size_t *len, size_t max_len);
 esp_err_t smbus_write_block(uint8_t addr, uint8_t cmd, const uint8_t *data, size_t len);
 esp_err_t smbus_write_raw_pec(uint8_t addr, uint8_t cmd, const uint8_t *data, size_t len);
+esp_err_t smbus_raw_write(uint8_t addr, const uint8_t *data, size_t len);
+esp_err_t smbus_raw_writeread(uint8_t addr, const uint8_t *wr, size_t wr_len, uint8_t *rd, size_t rd_len);
+void smbus_reset_pec(void);
 
 // -1 until the first successful gauge read, then 0 (off) or 1 (on).
 int smbus_pec_mode(void);

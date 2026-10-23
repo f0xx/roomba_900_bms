@@ -28,6 +28,10 @@ int smbus_pec_mode(void) {
     return s_pec;
 }
 
+void smbus_reset_pec(void) {
+    s_pec = -1;
+}
+
 void smbus_set_timeout_ms(int timeout_ms) {
     s_timeout_ms = timeout_ms < 20 ? 20 : timeout_ms;
 }
@@ -282,6 +286,14 @@ esp_err_t smbus_write_raw_pec(uint8_t addr, uint8_t cmd, const uint8_t *data, si
     body[0] = cmd;
     memcpy(body + 1, data, len);
     return write_body(addr, body, 1 + len);
+}
+
+esp_err_t smbus_raw_write(uint8_t addr, const uint8_t *data, size_t len) {
+    return transmit(addr, data, len);
+}
+
+esp_err_t smbus_raw_writeread(uint8_t addr, const uint8_t *wr, size_t wr_len, uint8_t *rd, size_t rd_len) {
+    return transceive(addr, wr, wr_len, rd, rd_len);
 }
 
 static esp_err_t read_word_pec(uint8_t addr, uint8_t cmd, uint16_t *value) {

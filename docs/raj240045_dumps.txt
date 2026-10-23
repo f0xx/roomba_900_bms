@@ -1,0 +1,103 @@
+# Roomba 900 BMS (4SU0016) — Renesas RAJ240045 (045A20) Memory Dumps
+# Captured over SMBus (WBL 0x40 + RBL 0x43) from PanasonicEnergy F12432809
+# SerialNumber: 10226 (0x27f2), ManufactureDate: 2018-08-09 (0x4d09)
+# CycleCount: 641 (0x0281), FullChargeCapacity: 1559 mAh (0x0617), DesignCapacity: 1800 mAh (0x0708)
+
+# === RL78 Extended SFRs / AFE Mirror (0x0F0000..0x0F07FF, non-empty 32B blocks) ===
+F0 0f0020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00
+F0 0f0060: ff 00 00 00 00 00 00 00 00 00 00 00 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+F0 0f0080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+F0 0f00a0: 1f 00 00 00 00 00 00 00 02 00 00 00 00 00 00 00 00 00 ff 00 ff 00 87 00 03 00 0f 00 00 00 00 00
+F0 0f00c0: 00 00 af 00 c3 00 05 05 00 00 02 00 02 00 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+F0 0f00e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 19 00 00 00 00 81 00 00 00 00 00 00 00 00 00 00
+F0 0f0100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 20 00 20 00 20 00 20 00 87 00 87 00 87 00 87 00
+F0 0f0120: 00 00 00 00 00 00 00 00 0f 0f 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+F0 0f0140: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 20 00 20 00 20 00 20 00 87 00 07 c0 87 00 87 00
+F0 0f0160: 02 00 00 00 00 00 02 00 02 02 02 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+F0 0f0180: f7 f3 c2 01 ff ff 7d 00 00 00 00 00 00 00 00 00 00 00 00 80 00 00 00 40 00 00 00 00 00 00 00 00
+F0 0f01a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00 00 00 37 03 00 00 00 00 00 00 00 00
+F0 0f0220: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 94 10 26 2b 16 1e 00 00 00 00 00 00 00 00 00 00
+F0 0f0260: 00 00 00 0c 00 00 80 ff 00 00 00 00 00 00 00 00 00 00 88 00 00 00 00 00 ff ff ff ff ff ff ff ff
+F0 0f0280: 00 00 88 00 00 00 00 00 ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+F0 0f02e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 cf 5b 00 00 00 00
+F0 0f07e0: 3d fe 4b 9f 0f a4 b3 96 87 95 e7 f8 3e be cd fa 45 d0 4e 43 aa 2f 7d 34 76 96 91 70 c5 98 b8 4b
+
+# === RL78 DataFlash (0x0F1000..0x0F1FFF, 4 KB, all non-FF 32B blocks) ===
+# Note: 0x0F1400..0x0F147F is the RMA (Permanent Failure / Fuse-blow snapshot) page.
+#       0x0F1800, 0x0F1900, 0x0F1A00, 0x0F1C00, 0x0F1D00 are the wear-leveled dynamic pages.
+DF 0f1400: 2f b6 04 80 6a db 00 02 41 26 49 1f 03 00 49 1f 05 00 4f 1f 0a 00 51 1f 06 00 bc 24 be 12 5e 11
+DF 0f1420: 00 07 3e 41 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1440: 40 00 00 00 b3 0f b5 0f b7 0f ba 0f 8c 0d dd 0b d9 3e 00 00 20 14 0c 00 09 00 41 c0 10 00 00 88
+DF 0f1460: eb 98 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1800: b2 10 af af af 81 02 17 06 f0 00 40 00 8f 01 16 00 00 a5 31 ff 00 00 00 00 00 00 6a 04 ff 98 2a
+DF 0f1820: 00 00 00 00 00 7a 0c 2b 0a 8b 10 00 00 7a 52 0b 00 51 15 ed f4 56 03 72 fe 9f f6 7f f2 bc 39 42
+DF 0f1840: 5f 01 00 00 00 00 00 00 ff ff ff 48 08 c1 09 ff ff ff ff ff ff ff ff ff ff ff ff 28 00 14 00 7c
+DF 0f1860: 15 ff ff ff ff c4 c4 c5 c5 26 06 28 06 1d 06 22 06 0e ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+DF 0f18e0: ff ff ff ff ff 4c fa 0c 06 00 c6 ff 4c f5 35 00 01 09 4d f2 27 ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1900: ff ff ff ff ff 81 02 17 06 f0 00 40 00 8f 01 16 00 00 a5 31 ff 00 00 00 00 00 00 6a 04 07 99 2a
+DF 0f1920: 00 00 00 00 00 7a 0c 2b 0a 8b 10 00 00 7a 52 0b 00 51 15 ed f4 56 03 72 fe 9f f6 7f f2 c2 39 44
+DF 0f1940: 5f 01 00 00 00 00 00 00 ff ff ff 48 08 c1 09 ff ff ff ff ff ff ff ff ff ff ff ff 28 00 14 00 7c
+DF 0f1960: 15 ff ff ff ff c4 c4 c5 c5 26 06 28 06 1d 06 22 06 0e ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+DF 0f19e0: ff ff ff ff ff 4c fa 0c 06 00 c6 ff 4c f5 35 00 01 09 4d f2 27 ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1a00: ff ff ff ff ff 81 02 17 06 f0 00 40 00 8f 01 16 00 00 a5 31 ff 00 00 00 00 00 00 6a 04 0f 99 2a
+DF 0f1a20: 00 00 00 00 00 7a 0c 2b 0a 8b 10 00 00 7a 52 0b 00 51 15 ed f4 56 03 72 fe 9f f6 7f f2 ca 39 44
+DF 0f1a40: 5f 01 00 00 00 00 00 00 ff ff ff 48 08 c1 09 ff ff ff ff ff ff ff ff ff ff ff ff 28 00 14 00 7c
+DF 0f1a60: 15 ff ff ff ff c4 c4 c5 c5 26 06 28 06 1d 06 22 06 0e ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1ae0: ff ff ff ff ff 4c fa 0c 06 00 c6 ff 4c f5 35 00 01 09 4d f2 27 ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1b00: ff ff ff ff ff 55 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1c00: b3 10 af af ff 81 02 17 06 f0 00 40 00 8f 01 16 00 00 a5 31 ff 00 00 00 00 00 00 6a 04 0f 99 2a
+DF 0f1c20: 00 00 00 00 00 7a 0c 2b 0a 8b 10 00 00 7a 52 0c 00 51 15 ed f4 56 03 72 fe 9f f6 7f f2 ca 39 44
+DF 0f1c40: 5f 01 00 00 00 00 00 00 ff ff ff 48 08 c1 09 ff ff ff ff ff ff ff ff ff ff ff ff 28 00 14 00 7c
+DF 0f1c60: 15 ff ff ff ff c4 c4 c5 c5 26 06 28 06 1d 06 22 06 0e ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1ce0: ff ff ff ff ff 4c fa 0c 06 00 c6 ff 4c f5 35 00 01 09 4d f2 27 ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1d00: ff ff ff ff ff 81 02 17 06 f0 00 40 00 8f 01 16 00 00 a5 31 ff 00 00 00 00 00 00 6a 04 0f 99 2a
+DF 0f1d20: 00 00 00 00 00 7a 0c 2b 0a 8b 10 00 00 7a 52 0d 00 51 15 ed f4 56 03 72 fe 9f f6 7f f2 ca 39 44
+DF 0f1d40: 5f 01 00 00 00 00 00 00 ff ff ff 48 08 c1 09 ff ff ff ff ff ff ff ff ff ff ff ff 28 00 14 00 7c
+DF 0f1d60: 15 ff ff ff ff c4 c4 c5 c5 26 06 28 06 1d 06 22 06 0e ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+DF 0f1de0: ff ff ff ff ff 4c fa 0c 06 00 c6 ff 4c f5 35 00 01 09 4d f2 27 ff ff ff ff ff ff ff ff ff ff ff
+
+# === RL78 Internal SRAM + SFRs (0x0FEF00..0x0FFFFF) ===
+RAM 0fef00: 03 2c 0f 01 f3 fd 01 00 b8 fd 06 30 00 00 01 00 01 00 3f 00 f4 fd 00 00 00 00 00 00 00 00 00 00
+RAM 0fef20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 52 f1 03 2c 0f 03 03 2c
+RAM 0fef40: 0f 08 00 00 00 18 ff ff 00 08 ff 1f 0f 00 03 09 09 11 11 03 87 0a 00 00 40 00 00 00 00 00 00 00
+RAM 0fef60: 00 00 00 01 00 01 00 01 00 00 01 00 da f3 fa eb 28 8b 09 52 58 67 c7 23 4d d7 06 4c 17 4a a4 96
+RAM 0fef80: 00 06 8c d5 95 b7 14 d9 f0 98 35 a8 9f f5 33 b4 2f ab 8d 9c e2 93 32 71 f6 df ee 52 ab 45 04 55
+RAM 0fefa0: 5e 84 a2 9b 6a 57 1e ec 0e 97 57 8e e6 9b 67 a8 db 0e 00 97 1a 5d 40 1c 45 9d 67 35 75 81 61 2f
+RAM 0fefc0: eb 87 25 06 ea fd 88 b2 bc 96 f9 c8 be 93 d6 39 cf f6 87 1c ff 9a 36 08 cf db 28 56 a3 f0 67 21
+RAM 0fefe0: 36 6b 54 6c db f5 90 91 00 6e b8 67 d0 4c e5 ed 74 f2 40 23 15 18 b7 f8 0b 28 5a 02 ea e0 a9 96
+RAM 0ff300: f7 de 38 8e 7b 1e 38 50 03 5f a4 61 97 ee c0 ec 72 f4 d1 01 00 00 00 00 00 00 00 00 00 00 00 00
+RAM 0ff320: 76 84 44 00 00 00 02 85 00 00 00 00 00 00 00 00 53 15 00 00 d2 15 00 00 9a 14 00 00 17 19 00 00
+RAM 0ff340: 00 00 c5 3c 00 00 00 00 8a b3 00 00 c6 b3 00 00 0e b5 00 00 1f b5 00 00 3b b5 00 00 aa b5 00 00
+RAM 0ff360: 93 b5 00 00 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+RAM 0ff480: 17 06 6a f7 14 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 43 10 00 00 00 00 00 00 00 00 00 00
+RAM 0ff4e0: 0e b1 0e c0 0e c4 0e c4 0e 00 00 c0 00 c1 00 00 00 00 00 a5 00 00 00 00 00 00 0b 0b 01 00 c8 00
+RAM 0ff500: 64 ff 00 00 00 00 00 00 00 86 10 04 10 04 10 88 13 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+RAM 0ff540: 76 f5 00 00 48 00 96 fe 0f 00 b1 0e c0 0e c3 0e c3 0e 15 00 00 00 00 00 ee ff 00 00 1d 3c 00 00
+RAM 0ff560: 5d 3c 00 00 63 3c 00 00 5e 3c 00 00 12 00 00 02 01 02 00 02 00 02 ff 01 00 00 00 00 00 00 d4 0c
+RAM 0ff580: 3d 73 d1 43 5e 73 4d 73 2f b6 04 80 6a db 00 02 41 26 49 1f 03 00 49 1f 05 00 4f 1f 0a 00 51 1f
+RAM 0ff5a0: 06 00 bc 24 be 12 5e 11 5a fb ff ff 00 00 00 00 00 00 00 00 00 00 5c 88 81 02 17 06 f0 00 40 00
+RAM 0ff5c0: 8f 01 16 00 00 a5 31 ff 00 00 00 00 00 00 6a 04 13 99 2a 00 00 00 00 00 7a 0c 2b 0a 8b 10 00 00
+RAM 0ff5e0: 7a 52 0d 00 51 15 ed f4 56 03 72 fe 9f f6 7f f2 cd 39 45 5f 01 00 00 00 00 00 00 ff ff ff 48 08
+RAM 0ff600: c1 09 ff ff ff ff ff ff ff ff ff ff ff ff 28 00 14 00 7c 15 ff ff ff ff c4 c4 c5 c5 26 06 28 06
+RAM 0ff620: 1d 06 22 06 0e ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+RAM 0ff680: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 4c fa 0c 06 00 c6 ff 4c
+RAM 0ff6a0: f5 35 00 01 09 4d f2 27 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00
+RAM 0ff7c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40 00 00 00 b1 0e c0 0e c3 0e c3 0e 15 00 9d 0b
+RAM 0ff7e0: f7 3a 00 00 00 04 0c 00 09 00 c1 c0 10 00 00 00 13 99 00 00 00 00 cf 5b 8f 4a 58 ed 66 f0 56 64
+RAM 0ff800: 01 00 10 00 b4 00 0a 00 00 00 00 00 ff ff ff ff ff ff 9d 0b f7 3a 00 00 00 00 14 00 00 00 00 00
+RAM 0ff820: 00 00 17 06 00 00 00 00 ff ff 00 00 00 00 d0 43 81 02 08 07 07 00 1c 09 00 00 00 00 00 00 00 00
+RAM 0ff860: 00 20 00 00 00 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00 00 00 00 00 00 00 03 80 00 00 05 02
+RAM 0ff880: ff ff c0 10 00 00 00 40 00 00 0c 67 79 ed 03 56 fe 72 f6 9f f2 7f 39 cd 5f 45 00 01 00 00 00 00
+RAM 0ff8a0: 00 00 0d 20 b5 13 00 00 00 00 00 00 00 40 00 01 00 00 04 00 00 00 63 ea 23 69 7d 21 bc 6b 2f b6
+RAM 0ffe00: 00 00 00 03 2a 9d 00 c6 66 93 00 c6 00 00 5d 93 00 00 06 3b 00 86 c0 fe a3 33 00 00 7e 01 00 00
+RAM 0ffe20: 01 00 41 4e ef 00 00 03 00 00 00 00 00 00 00 00 00 00 63 00 00 00 00 00 00 00 c0 10 00 00 00 11
+RAM 0ffe40: 67 1e 04 00 00 00 00 00 00 00 00 00 00 04 0c 00 09 00 c1 00 00 00 02 00 20 04 00 00 00 00 00 00
+RAM 0ffea0: 00 28 28 00 a0 fe 0f 00 16 00 00 00 00 02 00 43 00 00 00 00 03 20 a0 fe 0f 00 00 de 00 05 00 00
+RAM 0fff00: 60 04 00 03 01 00 00 3d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 24 f4 e8 03 00 00 00 00
+RAM 0fff20: ff 39 00 ff ff 00 fc b2 00 00 00 00 ff 00 00 00 00 00 00 00 00 00 00 00 08 10 00 0f 00 00 00 00
+RAM 0fff40: 00 00 00 00 00 00 00 00 00 00 08 00 00 00 00 00 17 1e 41 00 00 00 00 00 ff ff ff ff ff ff ff ff
+RAM 0fff60: 00 00 00 00 00 00 7d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+RAM 0fff80: 08 00 00 00 00 00 00 00 00 00 00 04 00 00 00 00 ff 00 00 00 12 00 01 01 00 00 00 12 00 00 00 00
+RAM 0fffa0: 00 c0 00 07 00 00 00 00 00 00 81 9a ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+RAM 0fffc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 00 00 1f fe 00 00 3f fe 00 00 3f fe 00 00
+RAM 0fffe0: 40 00 00 00 ff ff c7 ff 9f ff c7 ff 9f ff c7 ff 00 00 00 00 00 00 00 00 d2 fd 00 00 00 0f 00 00

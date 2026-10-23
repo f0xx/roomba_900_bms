@@ -278,29 +278,34 @@ static esp_err_t read_mem_block(uint32_t addr24, uint8_t out[32]) {
     return ESP_OK;
 }
 
-static uint8_t s_ram_a[4096];
-static uint8_t s_ram_b[4096];
+// Full SRAM is 0x0FEF00 .. 0x0FFFFF (4352 bytes = 0x1100 bytes).
+#define SRAM_BASE 0x0FEF00u
+#define SRAM_SIZE 0x1100u
 
-static void snapshot_ram(uint8_t dst[4096]) {
-    for (uint32_t off = 0; off < 4096u; off += 32u) {
-        if (read_mem_block(0x0FF000u + off, dst + off) != ESP_OK) {
+static uint8_t s_ram_a[SRAM_SIZE];
+static uint8_t s_ram_b[SRAM_SIZE];
+
+static void snapshot_ram(uint8_t dst[SRAM_SIZE]) {
+    for (uint32_t off = 0; off < SRAM_SIZE; off += 32u) {
+        if (read_mem_block(SRAM_BASE + off, dst + off) != ESP_OK) {
             memset(dst + off, 0, 32);
         }
     }
 }
 
-static void diff_ram(const char *tag_name) {
-    for (uint32_t off = 0x0300u; off < 4096u; off += 32u) {
-        if (off >= 0x0d80u && off < 0x0e00u) continue; // skip CPU call stack churn
+// Only print rows that actually contain our test pattern or non-noise changes.
+static void diff_ram_Region(const char *tag_name, uint32_t start_addr, uint32_t end_addr) {
+    for (uint32_t addr = start_addr; addr < end_addr; addr += 32u) {
+        uint32_t off = addr - SRAM_BASE;
         if (memcmp(s_ram_a + off, s_ram_b + off, 32) != 0) {
             char lb[32], la[32];
-            snprintf(lb, sizeof(lb), "%s OLD %06" PRIx32, tag_name, 0x0FF000u + off);
-            snprintf(la, sizeof(la), "%s NEW %06" PRIx32, tag_name, 0x0FF000u + off);
+            snprintf(lb, sizeof(lb), "%s OLD %06" PRIx32, tag_name, addr);
+            snprintf(la, sizeof(la), "%s NEW %06" PRIx32, tag_name, addr);
             log_hex(lb, s_ram_a + off, 32);
             log_hex(la, s_ram_b + off, 32);
         }
     }
-    memcpy(s_ram_a, s_ram_b, 4096);
+    memcpy(s_ram_a, s_ram_b, SRAM_SIZE);
 }
 
 static void panasonic_vendor_probe(void) {
@@ -309,91 +314,82 @@ static void panasonic_vendor_probe(void) {
     esp_log_level_set("i2c.common", ESP_LOG_NONE);
     smbus_set_timeout_ms(35);
 
-    snapshot_ram(s_ram_a);
+    uint8_t ch1[33] = {0}, ch2[33] = {0};
+    uint8_t r1[32] = {0}, r2[32] = {0}, r800[32] = {0};
+    size_t n1 = 0, n2 = 0;
 
-    // 1. What does WW 0x3b <= 0x1234 change in RAM?
-    ESP_LOGI(TAG, "=== 1. RAM diff after WW 0x3b <= 0x1234 ===");
-    smbus_write_word(BMS_ADDR, 0x3b, 0x1234);
-    snapshot_ram(s_ram_b);
-    diff_ram("3b");
-    smbus_write_word(BMS_ADDR, 0x3b, 0x0000);
-    snapshot_ram(s_ram_a);
-
-    // 2. What does WBL 0x40 len=1 [0x55] and len=2 [0x34, 0x12] change in RAM?
-    ESP_LOGI(TAG, "=== 2. RAM diff after WBL 0x40 len=1 [55] & len=2 [34 12] ===");
-    uint8_t b1 = 0x55;
-    smbus_write_block(BMS_ADDR, 0x40, &b1, 1);
-    snapshot_ram(s_ram_b);
-    diff_ram("40_1");
-    uint8_t b2[2] = {0x34, 0x12};
-    smbus_write_block(BMS_ADDR, 0x40, b2, 2);
-    snapshot_ram(s_ram_b);
-    diff_ram("40_2");
-
-    // 3. Arm 0x71 <= 0x0214, read 0x73(8), and see what WBL 0x73 [11 22 33 44 55 66 77 88] changes in RAM:
-    ESP_LOGI(TAG, "=== 3. RAM diff after 0x71<=0x0214 + RBL 0x73 + WBL 0x73 ===");
-    uint8_t ch[33] = {0};
-    size_t n = 0;
+    // Test A: Does a second 0x71<=0x0214 + RBL 0x73 change RAM[0ff7f8] even when ch1 == ch2?
+    ESP_LOGI(TAG, "=== A. Checking how 0x73 and RAM[0ff7f8] evolve across two calls ===");
     smbus_write_word(BMS_ADDR, 0x71, 0x0214);
     vTaskDelay(pdMS_TO_TICKS(5));
-    smbus_read_block(BMS_ADDR, 0x73, ch, &n, sizeof(ch));
-    log_hex("0x73 ch(8)", ch, n);
-    if (n == 8) {
+    smbus_read_block(BMS_ADDR, 0x73, ch1, &n1, sizeof(ch1));
+    read_mem_block(0x0FF7E0u, r1);
+    read_mem_block(0x0FF800u, r800);
+    log_hex("call1 0x73(8)   ", ch1, n1);
+    log_hex("call1 0ff7f8(8) ", r1 + 24, 8);
+    ESP_LOGI(TAG, "call1 0ff800 flag = 0x%02x%02x", r800[1], r800[0]);
+
+    // Now WITHOUT re-calling 0x71<=0x0214 (since 0ff800 is STILL 0x0001!), write r1[24..31] to WBL 0x73:
+    esp_err_t ew_direct = smbus_write_block(BMS_ADDR, 0x73, r1 + 24, 8);
+    if (i2c_stuck(ew_direct)) smbus_bus_recover();
+    read_mem_block(0x0FF800u, r800);
+    uint16_t w72 = 0xffff;
+    smbus_read_word(BMS_ADDR, 0x72, &w72);
+    ESP_LOGI(TAG, "direct WBL 0x73<=0ff7f8 (no 2nd 0x71): %s -> 0ff800=0x%02x%02x, 0x72=0x%04x",
+             esp_err_to_name(ew_direct), r800[1], r800[0], w72);
+
+    // Test B: What happens when we call 0x71<=0x0214 TWICE in a row without writing to 0x73?
+    smbus_write_word(BMS_ADDR, 0x71, 0x0214);
+    vTaskDelay(pdMS_TO_TICKS(5));
+    smbus_read_block(BMS_ADDR, 0x73, ch1, &n1, sizeof(ch1));
+    read_mem_block(0x0FF7E0u, r1);
+
+    smbus_write_word(BMS_ADDR, 0x71, 0x0214);
+    vTaskDelay(pdMS_TO_TICKS(5));
+    smbus_read_block(BMS_ADDR, 0x73, ch2, &n2, sizeof(ch2));
+    read_mem_block(0x0FF7E0u, r2);
+    log_hex("2x_1 0x73(8)    ", ch1, n1);
+    log_hex("2x_1 0ff7f8(8)  ", r1 + 24, 8);
+    log_hex("2x_2 0x73(8)    ", ch2, n2);
+    log_hex("2x_2 0ff7f8(8)  ", r2 + 24, 8);
+    if (n2 == 8) {
         s_disp.blk73_len = 8;
-        memcpy(s_disp.blk73, ch, 8);
-    }
-    snapshot_ram(s_ram_a);
-
-    uint8_t pat8[8] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
-    esp_err_t ew73 = smbus_write_block(BMS_ADDR, 0x73, pat8, 8);
-    ESP_LOGI(TAG, "WBL 0x73 [11..88]: %s", esp_err_to_name(ew73));
-    snapshot_ram(s_ram_b);
-    diff_ram("w73");
-
-    // 4. Arm 0x71 <= 0x0214, read 0x73(8), then write WW 0x71 <= 0x5678 and see what changes in RAM:
-    ESP_LOGI(TAG, "=== 4. RAM diff after 0x71<=0x0214 + RBL 0x73 + WW 0x71<=0x5678 ===");
-    smbus_write_word(BMS_ADDR, 0x71, 0x0214);
-    vTaskDelay(pdMS_TO_TICKS(5));
-    smbus_read_block(BMS_ADDR, 0x73, ch, &n, sizeof(ch));
-    log_hex("0x73 ch_b(8)", ch, n);
-    snapshot_ram(s_ram_a);
-
-    esp_err_t ew71 = smbus_write_word(BMS_ADDR, 0x71, 0x5678);
-    ESP_LOGI(TAG, "WW 0x71 <= 0x5678: %s", esp_err_to_name(ew71));
-    snapshot_ram(s_ram_b);
-    diff_ram("w71");
-
-    // 5. Fine-grained 256-byte page scan across 0x0F0000..0x0FFFFF to see EVERY readable 256-byte range:
-    ESP_LOGI(TAG, "=== 5. Scanning all readable 256-byte pages in 0x0F0000..0x0FFFFF ===");
-    uint8_t page_blk[32];
-    for (uint32_t addr = 0x0F0000u; addr < 0x100000u; addr += 0x0100u) {
-        if (addr >= 0x0F1000u && addr < 0x0F2000u) continue; // already dumped DF
-        if (addr >= 0x0FF000u) continue;                     // already dumped RAM
-        if (read_mem_block(addr, page_blk) == ESP_OK) {
-            char lbl[28];
-            snprintf(lbl, sizeof(lbl), "PAGE %06" PRIx32, addr);
-            log_hex(lbl, page_blk, 32);
-        }
+        memcpy(s_disp.blk73, ch2, 8);
     }
 
-    // 6. Scan which commands in 0x24..0xFF accept a 1-byte or 2-byte write (in normal mode):
-    ESP_LOGI(TAG, "=== 6. Scanning writable commands 0x24..0xFF (1-byte & 2-byte) ===");
-    for (int c = 0x24; c <= 0xFF; c++) {
-        uint8_t z2[2] = {0, 0};
-        esp_err_t e1 = smbus_write_raw_pec(BMS_ADDR, (uint8_t)c, z2, 1);
-        if (i2c_stuck(e1)) {
-            smbus_bus_recover();
-            vTaskDelay(pdMS_TO_TICKS(3));
+    // Test C: Also test writing r2[24..31] as 4 words to 0x71 (and as 1 word to 0x71) WITHOUT a 2nd 0x71<=0x0214:
+    for (int widx = 0; widx < 4; widx++) {
+        smbus_write_word(BMS_ADDR, 0x71, 0x0214);
+        vTaskDelay(pdMS_TO_TICKS(5));
+        smbus_read_block(BMS_ADDR, 0x73, ch1, &n1, sizeof(ch1));
+        read_mem_block(0x0FF7E0u, r1);
+        uint16_t word_le = (uint16_t)r1[24 + widx * 2] | ((uint16_t)r1[24 + widx * 2 + 1] << 8);
+        esp_err_t ew = smbus_write_word(BMS_ADDR, 0x71, word_le);
+        if (i2c_stuck(ew)) smbus_bus_recover();
+        read_mem_block(0x0FF800u, r800);
+        smbus_read_word(BMS_ADDR, 0x72, &w72);
+        ESP_LOGI(TAG, "WW 0x71<=0ff7f8_w%d (0x%04x): %s -> 0ff800=0x%02x%02x, 0x72=0x%04x",
+                 widx, word_le, esp_err_to_name(ew), r800[1], r800[0], w72);
+    }
+
+    // Test D: Also test writing (ch1[i] ^ r1[24+i]) and (r1[24+i] - ch1[i]) to WBL 0x73 (no 2nd 0x71):
+    for (int mode = 0; mode < 3; mode++) {
+        smbus_write_word(BMS_ADDR, 0x71, 0x0214);
+        vTaskDelay(pdMS_TO_TICKS(5));
+        smbus_read_block(BMS_ADDR, 0x73, ch1, &n1, sizeof(ch1));
+        read_mem_block(0x0FF7E0u, r1);
+        uint8_t out8[8];
+        for (int i = 0; i < 8; i++) {
+            if (mode == 0) out8[i] = ch1[i] ^ r1[24 + i];
+            else if (mode == 1) out8[i] = (uint8_t)(r1[24 + i] - ch1[i]);
+            else out8[i] = (uint8_t)(ch1[i] - r1[24 + i]);
         }
-        esp_err_t e2 = smbus_write_raw_pec(BMS_ADDR, (uint8_t)c, z2, 2);
-        if (i2c_stuck(e2)) {
-            smbus_bus_recover();
-            vTaskDelay(pdMS_TO_TICKS(3));
-        }
-        if (e1 == ESP_OK || e2 == ESP_OK) {
-            ESP_LOGI(TAG, "  writable cmd 0x%02x: 1B=%s 2B=%s",
-                     c, (e1 == ESP_OK) ? "OK" : "no", (e2 == ESP_OK) ? "OK" : "no");
-        }
+        esp_err_t ew = smbus_write_block(BMS_ADDR, 0x73, out8, 8);
+        if (i2c_stuck(ew)) smbus_bus_recover();
+        read_mem_block(0x0FF800u, r800);
+        smbus_read_word(BMS_ADDR, 0x72, &w72);
+        ESP_LOGI(TAG, "combo mode %d WBL 0x73: %s -> 0ff800=0x%02x%02x, 0x72=0x%04x",
+                 mode, esp_err_to_name(ew), r800[1], r800[0], w72);
     }
 
     smbus_set_timeout_ms(1000);

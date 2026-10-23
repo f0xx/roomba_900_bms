@@ -1,5 +1,6 @@
 #include "bms.h"
 #include "config.h"
+#include "rl78_tool0.h"
 #include "smbus.h"
 #include "tft.h"
 
@@ -21,6 +22,7 @@ void app_main(void) {
              PIN_I2C_SDA, PIN_I2C_SCL, I2C_FREQ_HZ, MUX_ADDR_DEFAULT, MUX_CHANNEL, BMS_ADDR);
 
     tft_init();
+    rl78_tool0_try_unlock();
 
     if (smbus_init() != ESP_OK) {
         ESP_LOGE(TAG, "ERROR: I2C init failed. No BMS command was sent.");
@@ -40,6 +42,8 @@ void app_main(void) {
     }
 
     smbus_log_scan();
+
+    rl78_smbus_boot_service();
 
     bool talking = false;
     esp_err_t err = bms_unlock(&talking);

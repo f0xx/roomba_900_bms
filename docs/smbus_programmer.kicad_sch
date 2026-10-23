@@ -207,7 +207,7 @@
     (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property "Description" "Power symbol GND" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
-    (symbol "power:GND_0_1"
+    (symbol "GND_0_1"
       (polyline (pts (xy 0 0) (xy 0 -1.27) (xy -1.524 -1.27) (xy 1.524 -1.27) (xy 0 -1.27) (xy 0 -2.54))
         (stroke (width 0.254) (type default)) (fill (type none)))
       (polyline (pts (xy -1.016 -2.54) (xy 1.016 -2.54))
@@ -215,7 +215,7 @@
       (polyline (pts (xy -0.508 -3.175) (xy 0.508 -3.175))
         (stroke (width 0.254) (type default)) (fill (type none)))
     )
-    (symbol "power:GND_1_1"
+    (symbol "GND_1_1"
       (pin power_in line (at 0 0 0) (length 0) hide
         (name "GND" (effects (font (size 1.27 1.27))))
         (number "1" (effects (font (size 1.27 1.27))))
@@ -233,13 +233,13 @@
     (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property "Description" "Power symbol +3V3" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
-    (symbol "power:+3V3_0_1"
+    (symbol "+3V3_0_1"
       (polyline (pts (xy 0 0) (xy 0 2.54))
         (stroke (width 0.254) (type default)) (fill (type none)))
       (polyline (pts (xy -1.27 2.54) (xy 1.27 2.54))
         (stroke (width 0.254) (type default)) (fill (type none)))
     )
-    (symbol "power:+3V3_1_1"
+    (symbol "+3V3_1_1"
       (pin power_in line (at 0 0 0) (length 0) hide
         (name "+3V3" (effects (font (size 1.27 1.27))))
         (number "1" (effects (font (size 1.27 1.27))))
