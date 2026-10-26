@@ -18,11 +18,16 @@
 #define PIN_TFT_DC   33
 #define PIN_TFT_BL   27
 
-// Renesas RAJ240045 (045A20) RL78 Protocol A 1-wire UART programmer pins:
-// - PIN_RL78_TOOL0 (GPIO 17) -> RAJ240045 QFN-32 Pin 7 (TOOL0/P40), with 1k-3.3k pull-up to 3.3V
-// - PIN_RL78_RESET (GPIO 16) -> RAJ240045 QFN-32 Pin 8 (RESET)
+// Renesas RAJ240045 programming pins. TOOL0 is the mode strap.
+// The datasheet's programming UART is two-wire: mode byte 0x00 on RxD0/TxD0.
+// - GPIO17 -> pin 7 TOOL0, 3.3k pull-up to 3.3V
+// - GPIO16 -> pin 8 RESET, direct
+// - GPIO25 -> pin 5 RxD0 (P16), ESP32 drives this
+// - GPIO26 <- pin 6 TxD0 (P17), 3.3k pull-up to 3.3V
 #define PIN_RL78_TOOL0 17
 #define PIN_RL78_RESET 16
+#define PIN_RL78_RXD0  25
+#define PIN_RL78_TXD0  26
 
 // SMBus is specified to 100 kHz. 50 kHz leaves margin for the mux,
 // 3k pull-ups, and a gauge that clock-stretches during flash writes.

@@ -1109,7 +1109,23 @@ esp_err_t bms_unlock(bool *talking) {
     }
 
     uint16_t voltage = 0;
-    esp_err_t err = smbus_read_word(BMS_ADDR, 0x09, &voltage);
+    esp_err_t err = ESP_FAIL;
+    for (int attempt = 0; attempt < 6; attempt++) {
+        voltage = 0;
+        err = smbus_read_word(BMS_ADDR, 0x09, &voltage);
+        if (err == ESP_OK && voltage != 0xFF01) {
+            break;
+        }
+        ESP_LOGW(TAG, "Voltage() attempt %d: %s raw 0x%04x",
+                 attempt + 1, esp_err_to_name(err), voltage);
+        vTaskDelay(pdMS_TO_TICKS(250));
+    }
+    if (err == ESP_OK && voltage == 0xFF01) {
+        ESP_LOGE(TAG, "Voltage() is 0xFF01. Application firmware is not running.");
+        snprintf(s_disp.state_line, sizeof(s_disp.state_line), "STUCK IN BOOT");
+        tft_update(&s_disp);
+        return ESP_ERR_INVALID_STATE;
+    }
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "ERROR: BMS 0x%02x did not return Voltage() (%s). No unlock attempted.",
                  BMS_ADDR, esp_err_to_name(err));
@@ -1153,7 +1169,7 @@ esp_err_t bms_unlock(bool *talking) {
     }
     ESP_LOGI(TAG, "device type 0x%04x (%s)", s_type, type_name(s_type));
     if (!have_type_word && s_family == 0) {
-        ESP_LOGE(TAG, "ERROR: device type unread. No unlock attempted.");
+        ESP_LOGI(TAG, "Panasonic gauge has no TI device type. TI unlock skipped.");
         gauge_fingerprint(voltage);
         return ESP_ERR_NOT_SUPPORTED;
     }
